@@ -9,7 +9,6 @@ class InventoryTransaction extends Model
 {
     use HasFactory;
 
-    // PASTIKAN TULISANNYA BENAR: guarded (bukan fillable)
     protected $guarded = ['id'];
 
     protected $casts = [

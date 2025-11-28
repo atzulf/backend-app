@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Models\InventoryTransaction;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\InventoryRequest;
 
 class InventoryTransactionController extends Controller
 {
@@ -17,15 +18,8 @@ class InventoryTransactionController extends Controller
     }
 
     // --- CREATE DATA ---
-    public function store(Request $request)
+    public function store(InventoryRequest $request): JsonResponse
     {
-        // 1. Validasi Input (Namanya 'qty' dan 'price')
-        $request->validate([
-            'date' => 'required|date',
-            'type' => 'required|in:Pembelian,Penjualan',
-            'qty' => 'required|numeric|min:0.01',
-            'price' => 'required|numeric|min:0', // Boleh 0 kalau misal hibah, tapi biasanya > 0
-        ]);
 
         try {
             DB::transaction(function () use ($request) {
@@ -66,15 +60,8 @@ class InventoryTransactionController extends Controller
     }
 
     // --- UPDATE DATA ---
-    public function update(Request $request, $id)
+    public function update(InventoryRequest $request, $id)
     {
-        // Validasi juga perlu di update biar aman
-        $request->validate([
-            'date' => 'required|date',
-            'type' => 'required|in:Pembelian,Penjualan',
-            'qty' => 'required|numeric|min:0.01',
-            'price' => 'required|numeric|min:0',
-        ]);
 
         $trx = InventoryTransaction::findOrFail($id);
         $oldDate = $trx->date;
